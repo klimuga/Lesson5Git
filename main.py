@@ -1,5 +1,3 @@
-print("Hello second branch! ")
-
 import shutil
 import use_functions
 import victory
@@ -32,81 +30,96 @@ def Invitation():
 
 SelectedAction = Invitation()
 
+def ActionMkDir(): # 1 создать папку
+    CreateDirName = input("Как назвать создаваемую папку? ")
+    if not os.path.exists(CreateDirName):
+        os.mkdir(CreateDirName)
+        print("УРА. папка {} успешно создана.".format(CreateDirName))
+    else:
+        print("ОШИБКА. папка {} уже существует. Оставляю как есть.".format(CreateDirName))
 
-while SelectedAction != 12:
-    if SelectedAction == 1: # создать папку
-        CreateDirName = input("Как назвать создаваемую папку? ")
-        if not os.path.exists(CreateDirName):
-            os.mkdir(CreateDirName)
-            print("УРА. папка {} успешно создана.".format(CreateDirName))
+def ActionRmFileDir(): # 2 удалить (файл/папку)
+    RemoveDirName = input("Какую папку удалить? ")
+    if os.path.exists(RemoveDirName):
+        os.rmdir(RemoveDirName)
+        print("УРА. папка {} успешно удалена.".format(RemoveDirName))
+    else:
+        print("ОШИБКА. папка {} не существует. Ничего не делаю.".format(RemoveDirName))
+
+def ActionCopyFileDir(): # 3 копировать (файл/папку)
+    CopyDirFileName = input("Какой файл или папку копировать? ")
+    CopyDirFileNameDestination = input("Как назвать файл или папку? ")
+    if os.path.exists(CopyDirFileNameDestination):
+        print("ОШИБКА. папка или файл {} уже существует.".format(CopyDirFileNameDestination))
+    elif not os.path.exists(CopyDirFileName):
+        print("ОШИБКА. папка {} не существует. Ничего не делаю.".format(CopyDirFileName))
+    else:
+        if os.path.isfile(CopyDirFileName):
+            shutil.copy(CopyDirFileName, CopyDirFileNameDestination)
         else:
-            print("ОШИБКА. папка {} уже существует. Оставляю как есть.".format(CreateDirName))
-        SelectedAction = Invitation()
-    elif SelectedAction == 2: # удалить (файл/папку)
-        RemoveDirName = input("Какую папку удалить? ")
-        if os.path.exists(RemoveDirName):
-            os.rmdir(RemoveDirName)
-            print("УРА. папка {} успешно удалена.".format(RemoveDirName))
-        else:
-            print("ОШИБКА. папка {} не существует. Ничего не делаю.".format(RemoveDirName))
-        SelectedAction = Invitation()
-    elif SelectedAction == 3: # копировать (файл/папку)
-        CopyDirFileName = input("Какой файл или папку копировать? ")
-        CopyDirFileNameDestination = input("Как назвать файл или папку? ")
-        if os.path.exists(CopyDirFileNameDestination):
-            print("ОШИБКА. папка или файл {} уже существует.".format(CopyDirFileNameDestination))
-        elif not os.path.exists(CopyDirFileName):
-            print("ОШИБКА. папка {} не существует. Ничего не делаю.".format(CopyDirFileName))
-        else:
-            if os.path.isfile(CopyDirFileName):
-                shutil.copy(CopyDirFileName, CopyDirFileNameDestination)
-            else:
-                shutil.copytree(CopyDirFileName, CopyDirFileNameDestination)
-            print("УРА. Скопировал {} в {}".format(CopyDirFileName, CopyDirFileNameDestination))
-        SelectedAction = Invitation()
-    elif SelectedAction == 4: # просмотр содержимого рабочей директории
+            shutil.copytree(CopyDirFileName, CopyDirFileNameDestination)
+        print("УРА. Скопировал {} в {}".format(CopyDirFileName, CopyDirFileNameDestination))
+
+def ActionLsDir(key=""): # 4 просмотр содержимого рабочей директории
+    """
+    :param key: "" - everything, "-d" - only dirs, no subdirs, "-f" - only files, no subdirs
+    :return:
+    """
+    if key == "":
         print("Содержимое текущей директории: ")
         for x in os.listdir():
             print(x)
         print("УРА. Удалось показать всё содержимое директории!!! ВАУ!!!")
-        SelectedAction = Invitation()
-    elif SelectedAction == 5: # посмотреть только папки
+    elif key == "-d":
         onlydirs = [f for f in os.listdir() if os.path.isdir(f)]
         print("Содержимое текущей директории (только директории): ")
         for x in onlydirs:
             print(x)
         print("УРА. Удалось показать все директории!!! ВАУ!!!")
-        SelectedAction = Invitation()
-    elif SelectedAction == 6: # посмотреть только файлы
+    elif key == "-f":
         onlyfiles = [f for f in os.listdir() if os.path.isfile(f)]
         print("Содержимое текущей директории (только файлы): ")
         for x in onlyfiles:
             print(x)
         print("УРА. Удалось показать все файлы из директории!!! ВАУ!!!")
-        SelectedAction = Invitation()
+    else:
+        print("ОШИБКА, функции передан неверный ключ.")
+
+def ActionChDir():
+    print("текущая директория: os.getcwd()={}".format(os.getcwd()))
+    NewDir = input("Введите новую директорию: ")
+    if NewDir.find("\\"):
+        print("found \\")
+        os.chdir(NewDir)
+    else:
+        os.chdir(os.getcwd() + "\\" + NewDir)
+    print("текущая директория: os.getcwd()={}".format(os.getcwd()))
+
+while SelectedAction != 12:
+    if SelectedAction == 1: # создать папку
+        ActionMkDir()
+    elif SelectedAction == 2: # удалить (файл/папку)
+        ActionRmFileDir()
+    elif SelectedAction == 3: # копировать (файл/папку)
+        ActionCopyFileDir()
+    elif SelectedAction == 4: # просмотр содержимого рабочей директории
+        ActionLsDir()
+    elif SelectedAction == 5: # посмотреть только папки
+        ActionLsDir("-d")
+    elif SelectedAction == 6: # посмотреть только файлы
+        ActionLsDir("-f")
     elif SelectedAction == 7: # просмотр информации об операционной системе
         print("sys.version_info: ", sys.version_info)
-        SelectedAction = Invitation()
     elif SelectedAction == 8: # создатель программы
         print("Программу сию написал Гэндальф Белый, о мой юный подаван.")
     elif SelectedAction == 9: # играть в викторину
         victory.Victorina()
-        SelectedAction = Invitation()
     elif SelectedAction == 10: # мой банковский счет
         use_functions.AccountManagement()
-        SelectedAction = Invitation()
     elif SelectedAction == 11: # смена рабочей директории (*необязательный пункт)
-        print("текущая директория: os.curdir={}, os.getcwd()={}".format(os.curdir, os.getcwd()))
-        NewDir = input("Введите новую директорию: ")
-        if NewDir.find("\\"):
-            print("found \\")
-            os.chdir(NewDir)
-        else:
-            os.chdir(os.getcwd()+"\\"+NewDir)
-        print("текущая директория: os.curdir={}, os.getcwd()={}".format(os.curdir, os.getcwd()))
-        SelectedAction = Invitation()
+        ActionChDir()
     elif SelectedAction == 12: # выход
         break
     else:
         print("Ошибка, некорректный ввод.")
-        SelectedAction = Invitation()
+    SelectedAction = Invitation()
