@@ -71,14 +71,17 @@ def ActionCopyFileDir(): # 3 копировать (файл/папку)
     CopyDirFileNameDestination = ActionInput("Как назвать файл или папку? ")
     if os.path.exists(CopyDirFileNameDestination):
         ActionPrint("ОШИБКА. папка или файл {} уже существует.".format(CopyDirFileNameDestination))
+        return False
     elif not os.path.exists(CopyDirFileName):
         ActionPrint("ОШИБКА. папка {} не существует. Ничего не делаю.".format(CopyDirFileName))
+        return False
     else:
         if os.path.isfile(CopyDirFileName):
             shutil.copy(CopyDirFileName, CopyDirFileNameDestination)
         else:
             shutil.copytree(CopyDirFileName, CopyDirFileNameDestination)
         ActionPrint("УРА. Скопировал {} в {}".format(CopyDirFileName, CopyDirFileNameDestination))
+        return True
 
 def ActionLsDir(key=""): # 4 просмотр содержимого рабочей директории
     """
