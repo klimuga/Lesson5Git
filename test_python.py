@@ -29,3 +29,7 @@ def test_pow():
 def test_hypot():
     assert math.hypot(3,4)==5
     assert math.hypot(12,5)==13
+
+def test_hypot2():
+    assert math.hypot(30,40)==50
+    assert math.hypot(120,50)==130
